@@ -1,33 +1,24 @@
-def seperate_line(line: str):
-    """Seperate a string into an array of strings of letters or a digit"""
-    word = ''
-    arr = []
-    for c in line:
-        if not c.isnumeric():
-            if c == '\n':
-                arr.append(word)
-            word += c
-                
-        else:
-            if word:
-                arr.append(word)
-                word = ''
-            arr.append(c)
-    return arr
-
-
 sum = 0
 valid_strings = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+valid_strings_reversed = [s[::-1] for s in valid_strings]
 
-with open('./data_ex.txt') as f:
+def find_first_digit_in_string(line: str, valid_strings) -> str:
+    word = ''
+    for c in line:
+        if c.isnumeric():
+            return (str)(c)
+        word += c
+        for i, valid in enumerate(valid_strings):
+            if valid in word:
+                return (str)(i + 1)
+            
+
+with open('./data.txt') as f:
     for line in f.readlines():
-        seperated = seperate_line(line)
-        print(seperated)
+        first_digit = find_first_digit_in_string(line, valid_strings)
+        last_digit  = find_first_digit_in_string(line[::-1], valid_strings_reversed)
+        sum += (int)(first_digit + last_digit)
+
 
 print(sum)
-
-# Seperate line into array of "words" and digits
-# Find the first and last word or digit that is valid
-
-
             
