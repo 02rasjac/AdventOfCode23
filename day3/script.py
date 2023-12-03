@@ -1,18 +1,6 @@
 # Part 1: 525119
-# Parse data into a list of lines.
-# FOR EACH LINE
-#   Find the index of the start of a number.
-#   Find the index of the end of that number
-#   Check the line before current line at index `start - 1` to `end + 1` for a
-#       symbol
-#   Do the same thing for the next line
-#   IF symbol is found:
-#       Add that number to the sum
 
 # Part 2: 76504829
-# Find the line-index, start-index and length for each number.
-# Find the line-index and string-index of each gear.
-# Check if the gear-indices is adjacent to *exactly* 2 numbers.
 
 import os
 import re
@@ -106,14 +94,8 @@ for i, line in enumerate(data):
             start_index = -1
             number_length = -1
 
-# for num in numbers:
-#     print(f"{num.line_index} | {num.start_index} | {num.length} | {num.number}")
-# for gear in gears:
-#    print(f"{gear[0]} | {gear[1]}")
-
 # Check if exactly 2 numbers are adjacent to a gear
 for gear in gears:
-    # print(f"Gear line index: {gear[0]}")
     adjacent_numbers = []
     # Iterate over all numbers in the lines around the gear's line (3 lines total)
     for number in [
@@ -130,13 +112,5 @@ for gear in gears:
 
     if len(adjacent_numbers) == 2:
         sum_of_ratios += int(adjacent_numbers[0]) * int(adjacent_numbers[1])
-        # in_adjacent_line = (
-        #     number.line_index >= gear[0] - 1 and number.line_index <= gear[0] + 1
-        # )
-        # next_to_gear_in_line = (
-        #     number.end_index == gear[1] - 1 or number.start_index == gear[1] + 1
-        # ) and number.line_index == gear[0]
-        # if next_to_gear_in_line:
-        #     number.printNum()
 
 print(sum_of_ratios)
