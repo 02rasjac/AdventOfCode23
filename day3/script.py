@@ -9,6 +9,11 @@
 #   IF symbol is found:
 #       Add that number to the sum
 
+# Part 2: 76504829
+# Find the line-index, start-index and length for each number.
+# Find the line-index and string-index of each gear.
+# Check if the gear-indices is adjacent to *exactly* 2 numbers.
+
 import os
 import re
 
@@ -18,9 +23,28 @@ reg = re.compile(r"[^0-9.]")
 # List of all lines
 data = []
 sum_of_nums = 0
+sum_of_ratios = 0
 with open(os.path.join(os.path.dirname(__file__), "./data.txt")) as f:
     for line in f.readlines():
         data.append(line[:-1])
+
+
+class Number:
+    line_index = 0
+    start_index = 0
+    end_index = 0
+    length = 0
+    number = 0
+
+    def __init__(self, line_index, start_index, length, number) -> None:
+        self.line_index = line_index
+        self.start_index = start_index
+        self.length = length
+        self.number = number
+        self.end_index = start_index + length - 1
+
+    def printNum(self):
+        print(f"{self.line_index} | {self.start_index} | {self.length} | {self.number}")
 
 
 def check_for_symbols(line_index, start_index, end_index):
@@ -51,24 +75,68 @@ def check_for_symbols(line_index, start_index, end_index):
     return is_before_num or is_after_num or is_before_line or is_after_line
 
 
+# Locate all numbers and gears
+numbers = []
+gears = []
 for i, line in enumerate(data):
     start_index = -1
-    end_index = -1
+    number_length = -1
     for j, c in enumerate(line):
         is_num = c.isnumeric()
-
+        if c == "*":
+            gears.append([i, j])
         if start_index < 0 and is_num:
             # See if we found the start of a number
             start_index = j
         elif start_index >= 0 and (not is_num or j == len(line) - 1):
             # See if we found the end of a number
             if j == len(line) - 1 and is_num:
-                end_index = j
+                number_length = len(line) - start_index
             else:
-                end_index = j - 1
-            if check_for_symbols(i, start_index, end_index):
-                sum_of_nums += int(line[start_index : end_index + 1])
-            start_index = -1
-            end_index = -1
+                number_length = j - start_index
+            numbers.append(
+                Number(
+                    i,
+                    start_index,
+                    number_length,
+                    line[start_index : (start_index + number_length)],
+                )
+            )
 
-print(sum_of_nums)
+            start_index = -1
+            number_length = -1
+
+# for num in numbers:
+#     print(f"{num.line_index} | {num.start_index} | {num.length} | {num.number}")
+# for gear in gears:
+#    print(f"{gear[0]} | {gear[1]}")
+
+# Check if exactly 2 numbers are adjacent to a gear
+for gear in gears:
+    # print(f"Gear line index: {gear[0]}")
+    adjacent_numbers = []
+    # Iterate over all numbers in the lines around the gear's line (3 lines total)
+    for number in [
+        n
+        for n in numbers
+        if n.line_index >= gear[0] - 1 and n.line_index <= gear[0] + 1
+    ]:
+        # Check if the number is immedially left of the gear
+        is_left = number.end_index == gear[1] - 1
+        is_right = number.start_index == gear[1] + 1
+        is_on = number.start_index <= gear[1] and number.end_index >= gear[1]
+        if is_on or is_left or is_right:
+            adjacent_numbers.append(number.number)
+
+    if len(adjacent_numbers) == 2:
+        sum_of_ratios += int(adjacent_numbers[0]) * int(adjacent_numbers[1])
+        # in_adjacent_line = (
+        #     number.line_index >= gear[0] - 1 and number.line_index <= gear[0] + 1
+        # )
+        # next_to_gear_in_line = (
+        #     number.end_index == gear[1] - 1 or number.start_index == gear[1] + 1
+        # ) and number.line_index == gear[0]
+        # if next_to_gear_in_line:
+        #     number.printNum()
+
+print(sum_of_ratios)
