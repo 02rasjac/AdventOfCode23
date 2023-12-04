@@ -9,7 +9,7 @@ This repo holds my source code aswell as my input-data and the example-data from
 |   1 |  [X]   |  [X]   |
 |   2 |  [X]   |  [X]   |
 |   3 |  [X]   |  [X]   |
-|   4 |        |        |
+|   4 |  [X]   |  [X]   |
 |   5 |        |        |
 |   6 |        |        |
 |   7 |        |        |
